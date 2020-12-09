@@ -1,4 +1,3 @@
-import CollectionPreview from "../collection-preview/collection-preview.component"
 import "./collection-item.styles.scss"
 
 const CollectionItem = ({ id, name, price, imageUrl }) => (
