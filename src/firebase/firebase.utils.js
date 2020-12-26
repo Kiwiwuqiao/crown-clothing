@@ -12,6 +12,8 @@ const config = {
     measurementId: "G-MLZRDGMPNG"
 }
 
+
+
 export const createUsersProfile = async (userAuth, ...additionalData) => {
     if (!userAuth) return;
 
@@ -35,6 +37,37 @@ export const createUsersProfile = async (userAuth, ...additionalData) => {
     }
 
     return userRef
+}
+
+
+
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+    const collectionRef = firestore.collection(collectionKey);
+
+    const batch = firestore.batch()
+    objectsToAdd.forEach(obj => {
+        const newDocRef = collectionRef.doc()
+        batch.set(newDocRef, obj)
+    });
+
+    await batch.commit()
+}
+
+export const convertCollectionsSnapshotToMap = (collections) => {
+    const transformedCollection = collections.docs.map(doc => {
+        const { title, items } = doc.data();
+        return {
+            routeName: encodeURI(title.toLowerCase()),
+            id: doc.id,
+            title,
+            items
+        }
+    })
+
+    return transformedCollection.reduce((accumulator, collection) => {
+        accumulator[collection.title.toLowerCase()] = collection;
+        return accumulator
+    }, {})
 }
 
 firebase.initializeApp(config)
