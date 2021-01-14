@@ -1,27 +1,26 @@
 
-import { Component } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
 import { signUpStart } from "../../redux/reducers/user/user.actions";
 import CustomButton from "../custom-button/custom-button.component";
 import FormInput from "../form-input/form-input.component";
 import { SignUpContainer, SignUpTitle } from "./sign-up.styles";
 
-class SignUp extends Component {
-    constructor() {
-        super()
+const SignUp = ({ signUpStart }) => {
 
-        this.state = {
+    const [userCredentials, setUserCredentials] = useState(
+        {
             displayName: "",
             email: "",
             password: "",
             confirmPassword: ""
         }
-    }
+    )
 
-    handleSubmit = async e => {
+    const { displayName, email, password, confirmPassword } = userCredentials
+
+    const handleSubmit = async e => {
         e.preventDefault()
-        const { signUpStart } = this.props
-        const { displayName, email, password, confirmPassword } = this.state
 
         signUpStart({ displayName, email, password })
 
@@ -32,31 +31,29 @@ class SignUp extends Component {
 
     }
 
-    handleChange = e => {
+    const handleChange = e => {
         const { name, value } = e.target
 
-        this.setState({ [name]: value })
+        setUserCredentials({ ...userCredentials, [name]: value })
     }
 
-    render() {
 
-        const { displayName, email, password, confirmPassword } = this.state
 
-        return <SignUpContainer className="sign-up">
-            <SignUpTitle className="title">I do not have a account</SignUpTitle>
-            <span>Sign up with your email and password</span>
+    return <SignUpContainer className="sign-up">
+        <SignUpTitle className="title">I do not have a account</SignUpTitle>
+        <span>Sign up with your email and password</span>
 
-            <form onSubmit={this.handleSubmit} className="sign-up-form">
-                <FormInput type='text' name='displayName' value={displayName} handleChange={this.handleChange} label="Display Name" required />
-                <FormInput type='email' name='email' value={email} handleChange={this.handleChange} label="Email" required />
-                <FormInput type='password' name='password' value={password} handleChange={this.handleChange} label="Password" required />
-                <FormInput type='password' name='confirmPassword' value={confirmPassword} handleChange={this.handleChange} label="Confirm Password" required />
+        <form onSubmit={handleSubmit} className="sign-up-form">
+            <FormInput type='text' name='displayName' value={displayName} handleChange={handleChange} label="Display Name" required />
+            <FormInput type='email' name='email' value={email} handleChange={handleChange} label="Email" required />
+            <FormInput type='password' name='password' value={password} handleChange={handleChange} label="Password" required />
+            <FormInput type='password' name='confirmPassword' value={confirmPassword} handleChange={handleChange} label="Confirm Password" required />
 
-                <CustomButton type="submit">SIGN UP</CustomButton>
+            <CustomButton type="submit">SIGN UP</CustomButton>
 
-            </form>
-        </SignUpContainer>
-    }
+        </form>
+    </SignUpContainer>
+
 }
 
 const mapDispatchToProps = dispatch => ({
